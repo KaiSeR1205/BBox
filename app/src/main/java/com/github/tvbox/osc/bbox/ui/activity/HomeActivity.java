@@ -275,7 +275,7 @@ public class HomeActivity extends BaseActivity {
                             @Override
                             public void run() {
                                 if (!useCacheConfig)
-                                    Toast.makeText(HomeActivity.this, "港城TV欢迎您", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(HomeActivity.this, "KaiSeR_TvBox欢迎您", Toast.LENGTH_SHORT).show();
                                 initData();
                             }
                         }, 50);
@@ -292,7 +292,7 @@ public class HomeActivity extends BaseActivity {
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(HomeActivity.this, "港城TV加载失败", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(HomeActivity.this, "KaiSeR_TvBox加载失败", Toast.LENGTH_SHORT).show();
                                 initData();
                             }
                         });

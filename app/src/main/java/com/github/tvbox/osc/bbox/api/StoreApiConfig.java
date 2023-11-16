@@ -39,20 +39,20 @@ public class StoreApiConfig {
         OkGo.<String>get(url).headers("User-Agent", "okhttp/3.15").headers("Accept",
                 "text/html," + "application/xhtml+xml,application/xml;q=0.9,image/avif," +
                         "image/webp,image/apng," + "*/*;q=0.8,application/signed-exchange;v=b3;" +
-                        "q=0.9").execute(new AbsCallback<String>() {
-            @Override
-            public void onSuccess(Response<String> response) {
-                callback.success(response.body());
-            }
+                        "q=0.9")
+                .execute(new AbsCallback<String>() {
+                    @Override
+                    public void onSuccess(Response<String> response) {
+                        callback.success(response.body());
+                    }
 
-            @Override
-            public String convertResponse(okhttp3.Response response) throws Throwable {
-                assert response.body() != null;
-                return response.body().string();
-            }
-        });
+                    @Override
+                    public String convertResponse(okhttp3.Response response) throws Throwable {
+                        assert response.body() != null;
+                        return response.body().string();
+                    }
+                });
     }
-
 
     public void Subscribe(Context context) {
 
@@ -61,12 +61,12 @@ public class StoreApiConfig {
         // 获取多仓地址
         HashMap<String, String> storeMap = Hawk.get(HawkConfig.STORE_API_MAP, new HashMap<>());
         ArrayList<String> storeNameHistory = Hawk.get(HawkConfig.STORE_API_NAME_HISTORY, new ArrayList<>());
-        String storeName = Hawk.get(HawkConfig.STORE_API_NAME, "爬的别人的仓库");
+        String storeName = Hawk.get(HawkConfig.STORE_API_NAME, "kaise的在线仓");
 
         if (storeMap.isEmpty()) {
             Toast.makeText(context, "仓库为空，使用默认仓库", Toast.LENGTH_SHORT).show();
-            String name = "爬的别人的仓库";
-            String sotreApi = "https://raw.githubusercontent.com/mlabalabala/TVResource/main/boxCfg/ori_source.json";
+            String name = "kaise的在线仓";
+            String sotreApi = "https://tvbox.kaiserzcx.cn/dc/json";
             storeMap.put(name, sotreApi);
             storeNameHistory.add(name);
             Hawk.put(HawkConfig.STORE_API_NAME_HISTORY, storeNameHistory);
@@ -93,21 +93,21 @@ public class StoreApiConfig {
 
                 // 多仓线路作为历史添加
                 // 默认添加30条，多出的直接放弃
-                for(int i=0; i<storeHouses.size(); i++){
+                for (int i = 0; i < storeHouses.size(); i++) {
 
                     JsonObject storeHouse = infoJson.get("storeHouse").getAsJsonArray().get(i).getAsJsonObject();
 
                     String sourceName = storeHouse.get("sourceName").getAsString();
                     String sourceUrl = storeHouse.get("sourceUrl").getAsString();
 
-                    if (!storeMap.containsValue(sourceUrl)){
+                    if (!storeMap.containsValue(sourceUrl)) {
                         storeMap.put(sourceName, sourceUrl);
                         storeNameHistory.add(sourceName);
                     }
                     // if (history.size() > 30)
-                    //     // history.remove(30);
-                    //     break;
-                    if (0==i){
+                    // // history.remove(30);
+                    // break;
+                    if (0 == i) {
 
                         String name = defStoreHouse.get("sourceName").getAsString();
                         String url = defStoreHouse.get("sourceUrl").getAsString();
@@ -117,24 +117,22 @@ public class StoreApiConfig {
                         Hawk.put(HawkConfig.STORE_API_NAME, name);
 
                         // 配置默认配置线路
-                        StoreApiConfig.get().MyRequest( url, urlsJson -> {
+                        StoreApiConfig.get().MyRequest(url, urlsJson -> {
                             String result = MutiUrl(urlsJson);
                             Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
                         });
                     }
 
-
                 }
                 Toast.makeText(context, "多仓订阅结束，到多源历史中切换！！！", Toast.LENGTH_SHORT).show();
-            }
-            else {
+            } else {
                 // 单源链接，直接请求
                 // 获取单源中的配置线路
 
                 String result = MutiUrl(sourceJson);
                 Toast.makeText(context, "单源链接，" + result, Toast.LENGTH_SHORT).show();
                 String currentStoreName = Hawk.get(HawkConfig.STORE_API_NAME, "");
-                if(!storeNameHistory.contains(currentStoreName)){
+                if (!storeNameHistory.contains(currentStoreName)) {
                     storeNameHistory.add(0, currentStoreName);
                 }
 
@@ -148,7 +146,8 @@ public class StoreApiConfig {
 
     private String MutiUrl(String urlsJson) {
 
-        // ArrayList<String> history = Hawk.get(HawkConfig.API_NAME_HISTORY, new ArrayList<>());
+        // ArrayList<String> history = Hawk.get(HawkConfig.API_NAME_HISTORY, new
+        // ArrayList<>());
         // HashMap<String, String> map = Hawk.get(HawkConfig.API_MAP, new HashMap<>());
 
         ArrayList<String> history = new ArrayList<>();
@@ -157,30 +156,29 @@ public class StoreApiConfig {
         String apiName = Hawk.get(HawkConfig.API_NAME, "");
         String apiUrl = Hawk.get(HawkConfig.API_URL, "");
 
-        if (!apiName.isEmpty()){
+        if (!apiName.isEmpty()) {
             history.add(apiName);
             map.put(apiName, apiUrl);
         }
 
         JsonObject urlsObject = new Gson().fromJson(urlsJson, JsonObject.class);
 
-        if(null == urlsObject.get("urls"))
+        if (null == urlsObject.get("urls"))
             return "订阅出错，失败！！！";
 
         JsonArray urlsObjects = urlsObject.get("urls").getAsJsonArray();
-
 
         for (JsonElement element : urlsObjects) {
             JsonObject obj = element.getAsJsonObject();
             String name = obj.get("name").getAsString();
             String url = obj.get("url").getAsString();
-            if(!map.containsValue(url)){
+            if (!map.containsValue(url)) {
                 history.add(name);
                 map.put(name, url);
             }
         }
-//        Hawk.put(HawkConfig.API_NAME, history.get(0));
-//        Hawk.put(HawkConfig.API_URL, map.get(history.get(0)));
+        // Hawk.put(HawkConfig.API_NAME, history.get(0));
+        // Hawk.put(HawkConfig.API_URL, map.get(history.get(0)));
         Hawk.put(HawkConfig.API_NAME_HISTORY, history);
         Hawk.put(HawkConfig.API_MAP, map);
         return "订阅结束，点击线路可切换";

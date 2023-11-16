@@ -31,11 +31,11 @@ public class App extends MultiDexApplication {
         instance = this;
         initParams();
         // OKGo
-        OkGoHelper.init(); //台标获取
+        OkGoHelper.init(); // 台标获取
         EpgUtil.init();
         // 初始化Web服务器
         ControlManager.init(this);
-        //初始化数据库
+        // 初始化数据库
         AppDataManager.init();
         LoadSir.beginBuilder()
                 .addCallback(new EmptyCallback())
@@ -55,7 +55,7 @@ public class App extends MultiDexApplication {
         Hawk.init(this).build();
 
         String defaultApiName = "默认-自备份线路";
-        String defaultApi = "https://raw.githubusercontent.com/mlabalabala/TVResource/main/boxCfg/default";
+        String defaultApi = "https://tvbox.kaiserzcx.cn/default_bak";
 
         HashMap<String, String> defaultApiMap = Hawk.get(HawkConfig.API_MAP, new HashMap<>());
         defaultApiMap.put(defaultApiName, defaultApi);
@@ -74,7 +74,7 @@ public class App extends MultiDexApplication {
         putDefault(HawkConfig.PLAY_TYPE, 1);
         putDefault(HawkConfig.HOME_REC, 1);
         putDefault(HawkConfig.IJK_CODEC, "硬解码");
-        putDefault(HawkConfig.HOME_REC_STYLE, false);//首页多行
+        putDefault(HawkConfig.HOME_REC_STYLE, false);// 首页多行
     }
 
     private void putDefault(String key, Object value) {
@@ -92,7 +92,6 @@ public class App extends MultiDexApplication {
         super.onTerminate();
         JSEngine.getInstance().destroy();
     }
-
 
     private VodInfo vodInfo;
 
